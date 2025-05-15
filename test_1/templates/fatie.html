@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>发布穿搭 - StyleForum</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .post-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 800px;
+            padding: 25px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e4e6eb;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #ddd;
+        }
+
+        .username {
+            font-weight: 600;
+            color: #1a73e8;
+        }
+
+        .editor {
+            margin-bottom: 20px;
+        }
+
+        .textarea-box {
+            width: 100%;
+            min-height: 150px;
+            border: 1px solid #e4e6eb;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 16px;
+            resize: vertical;
+            outline: none;
+        }
+
+        .功能栏 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-top: 1px solid #e4e6eb;
+        }
+
+        .左侧功能 {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .功能按钮 {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .功能按钮 i {
+            font-size: 18px;
+        }
+
+        .右侧按钮 {
+            display: flex;
+            gap: 10px;
+        }
+
+        .发布按钮 {
+            padding: 8px 25px;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .发布按钮:hover {
+            background: #1557b3;
+        }
+
+        .cancel-btn {
+            padding: 8px 20px;
+            background: #f0f2f5;
+            color: #666;
+            border: 1px solid #e4e6eb;
+            border-radius: 25px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* 标签样式 */
+        .tag-container {
+            display: none;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .tag {
+            padding: 4px 12px;
+            border: 1px solid #e4e6eb;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .tag.active {
+            background-color: #1a73e8;
+            color: white;
+            border-color: #1a73e8;
+        }
+
+        /* 成功提示样式 */
+        .success-toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(26, 115, 232, 0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .success-toast.show {
+            opacity: 1;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 600px) {
+            .功能栏 {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 0 0;
+            }
+
+            .左侧功能 {
+                justify-content: center;
+                gap: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="post-container">
+        <div class="header">
+            <div class="user-info">
+                <div class="user-avatar"></div>
+                <div class="username">你的用户名</div>
+            </div>
+        </div>
+
+        <form class="editor">
+            <textarea class="textarea-box" placeholder="分享你的穿搭灵感..."></textarea>
+
+            <!-- 图片上传组件 -->
+            <input type="file" id="image-input" accept="image/*" style="display: none;">
+
+            <div class="功能栏">
+                <div class="左侧功能">
+                    <!-- 图片按钮 -->
+                    <div class="功能按钮" id="image-btn">
+                        <i class="fas fa-image"></i>
+                        图片
+                    </div>
+
+                    <!-- 标签选择 -->
+                    <div class="功能按钮" id="tag-btn">
+                        <i class="fas fa-tag"></i>
+                        标签
+                    </div>
+
+                    <!-- 标签选项 -->
+                    <div class="tag-container" id="tag-container">
+                        <div class="tag" data-type="休闲运动">休闲运动</div>
+                        <div class="tag" data-type="日常通勤">日常通勤</div>
+                        <div class="tag" data-type="悠闲度假">悠闲度假</div>
+                        <div class="tag" data-type="乐享派对">乐享派对</div>
+                    </div>
+                </div>
+
+                <div class="右侧按钮">
+                    <button type="button" class="cancel-btn" onclick="closeTagMenu()">取消</button>
+                    <button type="submit" class="发布按钮">发布</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- 成功提示框 -->
+    <div id="success-toast" class="success-toast">发帖成功！</div>
+
+    <!-- 字体图标库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+    <script>
+        // 图片上传功能
+        const imageBtn = document.getElementById('image-btn');
+        const imageInput = document.getElementById('image-input');
+
+        imageBtn.addEventListener('click', () => {
+            imageInput.click();
+        });
+
+        // 标签选择功能
+        const tagBtn = document.getElementById('tag-btn');
+        const tagContainer = document.getElementById('tag-container');
+        const tags = document.querySelectorAll('.tag');
+
+        tagBtn.addEventListener('click', () => {
+            tagContainer.style.display = tagContainer.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // 关闭标签菜单
+        function closeTagMenu() {
+            tagContainer.style.display = 'none';
+        }
+
+        // 标签切换
+        tags.forEach(tag => {
+            tag.addEventListener('click', () => {
+                tag.classList.toggle('active');
+            });
+        });
+
+        // 成功提示框
+        const successToast = document.getElementById('success-toast');
+
+        // 表单提交示例（可添加实际提交逻辑）
+        document.querySelector('form').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // 显示成功提示
+            showSuccessToast();
+
+            // 获取表单数据
+            const content = document.querySelector('.textarea-box').value;
+            const selectedTags = Array.from(tags)
+                .filter(tag => tag.classList.contains('active'))
+                .map(tag => tag.textContent);
+
+            console.log('发布内容:', content);
+            console.log('选择的标签:', selectedTags);
+
+            // 这里可以添加实际的提交服务器逻辑
+            // 模拟提交延迟
+            setTimeout(() => {
+                // 提交成功后可以做一些操作，如清空表单
+                document.querySelector('.textarea-box').value = '';
+                tags.forEach(tag => tag.classList.remove('active'));
+            }, 500);
+        });
+
+        // 显示成功提示
+        function showSuccessToast() {
+            successToast.classList.add('show');
+
+            // 2秒后隐藏提示
+            setTimeout(() => {
+                successToast.classList.remove('show');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
