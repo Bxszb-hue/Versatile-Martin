@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>论坛 - 连接志同道合的朋友</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#FF7D00',
+                        neutral: {100: '#F5F7FA', 200: '#E4E6EB', 300: '#C9CDD4', 400: '#86909C', 500: '#4E5969', 600: '#272E3B', 700: '#1D2129'}
+                    },
+                    fontFamily: {inter: ['Inter', 'sans-serif']},
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto { content-visibility: auto; }
+            .card-hover { transition: all 0.3s ease; }
+            .card-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+            .input-focus { @apply focus:ring-2 focus:ring-primary/30 focus:border-primary; }
+        }
+    </style>
+</head>
+<body class="font-inter bg-neutral-100 text-neutral-700 min-h-screen">
+    <!-- 登录页面 -->
+    <div id="login-page" class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-md">
+            <div class="text-center mb-8">
+                <div class="flex items-center justify-center">
+                    <i class="fa fa-comments text-primary text-3xl mr-2"></i>
+                    <span class="font-bold text-2xl">论坛</span>
+                </div>
+                <p class="text-neutral-500 mt-2">连接志同道合的朋友</p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                <h2 class="text-xl font-bold mb-6 text-center">登录</h2>
+
+                <div class="space-y-4">
+                    <div>
+                        <label for="login-username" class="block text-sm font-medium text-neutral-700 mb-1">用户名或邮箱</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-400">
+                                <i class="fa fa-user"></i>
+                            </span>
+                            <input type="text" id="login-username" class="w-full pl-10 pr-4 py-2 border border-neutral-300 rounded-lg input-focus" placeholder="请输入用户名或邮箱">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="login-password" class="block text-sm font-medium text-neutral-700 mb-1">密码</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-400">
+                                <i class="fa fa-lock"></i>
+                            </span>
+                            <input type="password" id="login-password" class="w-full pl-10 pr-4 py-2 border border-neutral-300 rounded-lg input-focus" placeholder="请输入密码">
+                            <button type="button" class="absolute inset-y-0 right-0 flex items-center pr-3 text-neutral-400 hover:text-neutral-600">
+                                <i class="fa fa-eye-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input id="remember-me" type="checkbox" class="h-4 w-4 text-primary border-neutral-300 rounded focus:ring-primary">
+                            <label for="remember-me" class="ml-2 block text-sm text-neutral-700">记住我</label>
+                        </div>
+                        <a href="#" class="text-sm text-primary hover:text-primary/80">忘记密码?</a>
+                    </div>
+
+                    <button id="login-btn" class="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors shadow-md hover:shadow-lg">
+                        登录
+                    </button>
+
+                    <div class="text-center text-sm text-neutral-500">
+                        还没有账号? <a href="#" id="register-link" class="text-primary hover:text-primary/80 font-medium">立即注册</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 注册页面 -->
+    <div id="register-page" class="min-h-screen flex items-center justify-center p-4 hidden">
+        <div class="w-full max-w-md">
+            <div class="text-center mb-8">
+                <div class="flex items-center justify-center">
+                    <i class="fa fa-comments text-primary text-3xl mr-2"></i>
+                    <span class="font-bold text-2xl">论坛</span>
+                </div>
+                <p class="text-neutral-500 mt-2">创建你的账号</p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                <h2 class="text-xl font-bold mb-6 text-center">注册</h2>
+
+                <div class="space-y-4">
+                    <div>
+                        <label for="register-username" class="block text-sm font-medium text-neutral-700 mb-1">用户名</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-400">
+                                <i class="fa fa-user"></i>
+                            </span>
+                            <input type="text" id="register-username" class="w-full pl-10 pr-4 py-2 border border-neutral-300 rounded-lg input-focus" placeholder="请输入用户名">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="register-email" class="block text-sm font-medium text-neutral-700 mb-1">邮箱</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-400">
+                                <i class="fa fa-envelope"></i>
+                            </span>
+                            <input type="email" id="register-email" class="w-full pl-10 pr-4 py-2 border border-neutral-300 rounded-lg input-focus" placeholder="请输入邮箱">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="register-password" class="block text-sm font-medium text-neutral-700 mb-1">密码</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-400">
+                                <i class="fa fa-lock"></i>
+                            </span>
+                            <input type="password" id="register-password" class="w-full pl-10 pr-4 py-2 border border-neutral-300 rounded-lg input-focus" placeholder="请输入密码">
+                            <button type="button" class="absolute inset-y-0 right-0 flex items-center pr-3 text-neutral-400 hover:text-neutral-600">
+                                <i class="fa fa-eye-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="register-confirm-password" class="block text-sm font-medium text-neutral-700 mb-1">确认密码</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-400">
+                                <i class="fa fa-lock"></i>
+                            </span>
+                            <input type="password" id="register-confirm-password" class="w-full pl-10 pr-4 py-2 border border-neutral-300 rounded-lg input-focus" placeholder="请再次输入密码">
+                            <button type="button" class="absolute inset-y-0 right-0 flex items-center pr-3 text-neutral-400 hover:text-neutral-600">
+                                <i class="fa fa-eye-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center">
+                        <input id="agree-terms" type="checkbox" class="h-4 w-4 text-primary border-neutral-300 rounded focus:ring-primary">
+                        <label for="agree-terms" class="ml-2 block text-sm text-neutral-700">
+                            我已阅读并同意<a href="#" class="text-primary hover:text-primary/80">用户协议</a>和<a href="#" class="text-primary hover:text-primary/80">隐私政策</a>
+                        </label>
+                    </div>
+
+                    <button id="register-btn" class="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors shadow-md hover:shadow-lg">
+                        注册
+                    </button>
+
+                    <div class="text-center text-sm text-neutral-500">
+                        已有账号? <a href="#" id="login-link" class="text-primary hover:text-primary/80 font-medium">立即登录</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主页面 (之前的个人中心页面) -->
+    <div id="main-page" class="hidden">
+        <!-- 导航栏 -->
+        <header class="sticky top-0 z-50 bg-white shadow-sm">
+            <div class="container mx-auto px-4 flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="#" class="flex items-center text-primary">
+                        <i class="fa fa-comments text-2xl mr-2"></i>
+                        <span class="font-bold text-xl">论坛</span>
+                    </a>
+                    <nav class="hidden md:flex ml-8 space-x-6">
+                        <a href="#" class="text-neutral-700 hover:text-primary">首页</a>
+                        <a href="#" class="text-primary font-medium border-b-2 border-primary">个人中心</a>
+                        <a href="#" class="text-neutral-700 hover:text-primary">社区</a>
+                        <a href="#" class="text-neutral-700 hover:text-primary">帮助</a>
+                    </nav>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 rounded-full hover:bg-neutral-100 relative">
+                        <i class="fa fa-bell text-neutral-500"></i>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="relative group">
+                        <button class="flex items-center space-x-2">
+                            <img src="https://picsum.photos/id/64/40/40" alt="用户头像" class="w-8 h-8 rounded-full object-cover">
+                            <span class="hidden sm:block text-sm font-medium">张三</span>
+                            <i class="fa fa-chevron-down text-xs text-neutral-500"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all">
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-neutral-100"><i class="fa fa-user-circle mr-2"></i>个人中心</a>
+                            <a href="#" class="block px-4 py-2 text-sm hover:bg-neutral-100"><i class="fa fa-cog mr-2"></i>设置</a>
+                            <div class="border-t border-neutral-200 my-1"></div>
+                            <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-neutral-100"><i class="fa fa-sign-out mr-2"></i>退出登录</a>
+                        </div>
+                    </div>
+                    <button class="md:hidden p-2 rounded-md hover:bg-neutral-100">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主内容区 -->
+        <main class="container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- 左侧：个人信息 -->
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                        <div class="flex flex-col items-center text-center">
+                            <div class="relative mb-4">
+                                <img src="https://picsum.photos/id/64/120/120" alt="用户头像" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md">
+                                <button class="absolute bottom-0 right-0 bg-primary text-white rounded-full p-2 shadow-lg hover:scale-110 transition-transform">
+                                    <i class="fa fa-camera"></i>
+                                </button>
+                            </div>
+                            <h1 class="text-xl font-bold mb-1">张三</h1>
+                            <p class="text-neutral-500 mb-4">活跃用户</p>
+                            <div class="flex justify-center space-x-3 mb-6">
+                                <button class="bg-primary text-white px-4 py-2 rounded-lg shadow hover:bg-primary/90 transition-colors">
+                                    <i class="fa fa-pencil mr-2"></i>编辑资料
+                                </button>
+                                <button class="bg-white text-primary border border-primary px-4 py-2 rounded-lg hover:bg-primary/5 transition-colors">
+                                    <i class="fa fa-cog mr-2"></i>设置
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-3 w-full text-center border-t border-neutral-200 pt-4">
+                                <div><p class="text-2xl font-bold text-primary">24</p><p class="text-sm text-neutral-500">帖子</p></div>
+                                <div><p class="text-2xl font-bold text-primary">138</p><p class="text-sm text-neutral-500">评论</p></div>
+                                <div><p class="text-2xl font-bold text-primary">256</p><p class="text-sm text-neutral-500">获赞</p></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                        <h2 class="text-lg font-semibold mb-4 flex items-center"><i class="fa fa-user-circle text-primary mr-2"></i>个人信息</h2>
+                        <div class="space-y-3">
+                            <div class="flex items-center"><span class="w-24 text-neutral-500">用户名</span><span>张三</span></div>
+                            <div class="flex items-center"><span class="w-24 text-neutral-500">性别</span><span>男</span></div>
+                            <div class="flex items-center"><span class="w-24 text-neutral-500">年龄</span><span>28岁</span></div>
+                            <div class="flex items-center"><span class="w-24 text-neutral-500">职业</span><span>软件工程师</span></div>
+                            <div class="flex items-center"><span class="w-24 text-neutral-500">手机号</span><span>138****6789</span></div>
+                            <div class="flex items-center"><span class="w-24 text-neutral-500">邮箱</span><span>example@mail.com</span></div>
+                            <div class="flex items-center"><span class="w-24 text-neutral-500">注册时间</span><span>2024-03-15</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧：帖子管理 -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-lg font-semibold flex items-center"><i class="fa fa-file-text-o text-primary mr-2"></i>我的帖子</h2>
+                            <div class="flex space-x-2">
+                                <button class="px-4 py-2 bg-primary text-white rounded-lg shadow hover:bg-primary/90 transition-colors">
+                                    <i class="fa fa-plus mr-2"></i>发布新帖
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="border-b border-neutral-200 mb-4">
+                            <div class="flex">
+                                <button class="px-4 py-2 text-primary font-medium border-b-2 border-primary">全部</button>
+                                <button class="px-4 py-2 text-neutral-500 hover:text-neutral-700">已发布</button>
+                                <button class="px-4 py-2 text-neutral-500 hover:text-neutral-700">草稿</button>
+                                <button class="px-4 py-2 text-neutral-500 hover:text-neutral-700">已删除</button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="p-4 hover:bg-neutral-50 rounded-lg transition-colors">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex-grow mr-4">
+                                        <h3 class="font-medium text-lg mb-2 hover:text-primary transition-colors cursor-pointer">如何高效学习前端开发？分享我的经验</h3>
+                                        <p class="text-neutral-500 text-sm mb-3 line-clamp-2">前端开发是一个不断发展的领域，掌握正确的学习方法至关重要。本文分享了我从零基础到成为前端工程师的学习路径和心得体会...</p>
+                                        <div class="flex items-center text-sm text-neutral-500">
+                                            <span class="mr-4"><i class="fa fa-eye mr-1"></i> 328</span>
+                                            <span class="mr-4"><i class="fa fa-comment mr-1"></i> 42</span>
+                                            <span><i class="fa fa-thumbs-up mr-1"></i> 89</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col items-end">
+                                        <span class="text-xs text-neutral-400">2025-05-10</span>
+                                        <div class="flex space-x-2 mt-2">
+                                            <button class="text-neutral-500 hover:text-primary transition-colors"><i class="fa fa-pencil"></i></button>
+                                            <button class="text-neutral-500 hover:text-red-500 transition-colors"><i class="fa fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-4 hover:bg-neutral-50 rounded-lg transition-colors">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex-grow mr-4">
+                                        <h3 class="font-medium text-lg mb-2 hover:text-primary transition-colors cursor-pointer">Tailwind CSS 3.0 新特性详解</h3>
+                                        <p class="text-neutral-500 text-sm mb-3 line-clamp-2">Tailwind CSS 3.0 带来了许多令人兴奋的新特性，包括JIT编译器的改进、新的颜色系统、更强大的响应式设计工具...</p>
+                                        <div class="flex items-center text-sm text-neutral-500">
+                                            <span class="mr-4"><i class="fa fa-eye mr-1"></i> 256</span>
+                                            <span class="mr-4"><i class="fa fa-comment mr-1"></i> 31</span>
+                                            <span><i class="fa fa-thumbs-up mr-1"></i> 73</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col items-end">
+                                        <span class="text-xs text-neutral-400">2025-05-05</span>
+                                        <div class="flex space-x-2 mt-2">
+                                            <button class="text-neutral-500 hover:text-primary transition-colors"><i class="fa fa-pencil"></i></button>
+                                            <button class="text-neutral-500 hover:text-red-500 transition-colors"><i class="fa fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-4 hover:bg-neutral-50 rounded-lg transition-colors">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex-grow mr-4">
+                                        <h3 class="font-medium text-lg mb-2 hover:text-primary transition-colors cursor-pointer">React 18 新特性与性能优化</h3>
+                                        <p class="text-neutral-500 text-sm mb-3 line-clamp-2">React 18 带来了自动批处理、并发渲染等重要特性，本文详细介绍了这些新特性以及如何利用它们优化你的React应用...</p>
+                                        <div class="flex items-center text-sm text-neutral-500">
+                                            <span class="mr-4"><i class="fa fa-eye mr-1"></i> 412</span>
+                                            <span class="mr-4"><i class="fa fa-comment mr-1"></i> 56</span>
+                                            <span><i class="fa fa-thumbs-up mr-1"></i> 124</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col items-end">
+                                        <span class="text-xs text-neutral-400">2025-04-28</span>
+                                        <div class="flex space-x-2 mt-2">
+                                            <button class="text-neutral-500 hover:text-primary transition-colors"><i class="fa fa-pencil"></i></button>
+                                            <button class="text-neutral-500 hover:text-red-500 transition-colors"><i class="fa fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex justify-center">
+                            <button class="px-4 py-2 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors">
+                                加载更多 <i class="fa fa-chevron-down ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 页脚 -->
+        <footer class="bg-white border-t border-neutral-200 mt-12">
+            <div class="container mx-auto px-4 py-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <div class="flex items-center">
+                            <i class="fa fa-comments text-primary text-2xl mr-2"></i>
+                            <span class="font-bold text-xl">论坛</span>
+                        </div>
+                        <p class="text-neutral-500 text-sm mt-2">连接志同道合的朋友</p>
+                    </div>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-neutral-500 hover:text-primary transition-colors"><i class="fa fa-github text-xl"></i></a>
+                        <a href="#" class="text-neutral-500 hover:text-primary transition-colors"><i class="fa fa-twitter text-xl"></i></a>
+                        <a href="#" class="text-neutral-500 hover:text-primary transition-colors"><i class="fa fa-instagram text-xl"></i></a>
+                        <a href="#" class="text-neutral-500 hover:text-primary transition-colors"><i class="fa fa-linkedin text-xl"></i></a>
+                    </div>
+                </div>
+                <div class="border-t border-neutral-200 mt-6 pt-6 text-center text-neutral-500 text-sm">
+                    <p>© 2025 论坛. 保留所有权利.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // 页面切换逻辑
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginPage = document.getElementById('login-page');
+            const registerPage = document.getElementById('register-page');
+            const mainPage = document.getElementById('main-page');
+
+            // 登录页面切换到注册页面
+            document.getElementById('register-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                loginPage.classList.add('hidden');
+                registerPage.classList.remove('hidden');
+            });
+
+            // 注册页面切换到登录页面
+            document.getElementById('login-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                registerPage.classList.add('hidden');
+                loginPage.classList.remove('hidden');
+            });
+
+            // 登录按钮逻辑
+            document.getElementById('login-btn').addEventListener('click', function() {
+                const username = document.getElementById('login-username').value;
+                const password = document.getElementById('login-password').value;
+
+                if (!username || !password) {
+                    alert('请输入用户名和密码');
+                    return;
+                }
+
+                // 模拟登录成功
+                loginPage.classList.add('hidden');
+                mainPage.classList.remove('hidden');
+            });
+
+            // 注册按钮逻辑
+            document.getElementById('register-btn').addEventListener('click', function() {
+                const username = document.getElementById('register-username').value;
+                const email = document.getElementById('register-email').value;
+                const password = document.getElementById('register-password').value;
+                const confirmPassword = document.getElementById('register-confirm-password').value;
+                const agreeTerms = document.getElementById('agree-terms').checked;
+
+                if (!username || !email || !password) {
+                    alert('请填写所有必填字段');
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    alert('两次输入的密码不一致');
+                    return;
+                }
+
+                if (!agreeTerms) {
+                    alert('请同意用户协议和隐私政策');
+                    return;
+                }
+
+                // 模拟注册成功
+                alert('注册成功，请登录');
+                registerPage.classList.add('hidden');
+                loginPage.classList.remove('hidden');
+            });
+
+            // 退出登录逻辑
+            document.querySelector('.fa-sign-out').closest('a').addEventListener('click', function(e) {
+                e.preventDefault();
+                mainPage.classList.add('hidden');
+                loginPage.classList.remove('hidden');
+            });
+
+            // 导航栏滚动效果
+            window.addEventListener('scroll', function() {
+                const header = document.querySelector('header');
+                if (window.scrollY > 10) {
+                    header.classList.add('shadow-md');
+                    header.classList.remove('shadow-sm');
+                } else {
+                    header.classList.remove('shadow-md');
+                    header.classList.add('shadow-sm');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
