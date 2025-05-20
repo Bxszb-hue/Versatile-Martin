@@ -40,8 +40,7 @@
                 <nav class="hidden md:flex ml-8 space-x-6">
                     <a href="#" class="text-neutral-700 hover:text-primary">首页</a>
                     <a href="#" class="text-primary font-medium border-b-2 border-primary">个人中心</a>
-                    <a href="#" class="text-neutral-700 hover:text-primary">社区</a>
-                    <a href="#" class="text-neutral-700 hover:text-primary">帮助</a>
+                    <!-- 移除了社区和帮助链接 -->
                 </nav>
             </div>
             <div class="flex items-center space-x-4">
@@ -240,17 +239,4 @@
             const header = document.querySelector('header');
             if (window.scrollY > 10) {
                 header.classList.add('shadow-md');
-                header.classList.remove('shadow-sm');
-            } else {
-                header.classList.remove('shadow-md');
-                header.classList.add('shadow-sm');
-            }
-        });
-
-        // 编辑资料模态框（示例功能）
-        document.querySelector('.fa-pencil').closest('button').addEventListener('click', function() {
-            alert('编辑资料功能已触发');
-        });
-    </script>
-</body>
-</html>
+                header.classList.remove('shadow
