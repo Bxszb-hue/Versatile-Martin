@@ -25,6 +25,7 @@
             .content-auto { content-visibility: auto; }
             .card-hover { transition: all 0.3s ease; }
             .card-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+            .modal-backdrop { backdrop-filter: blur(4px); }
         }
     </style>
 </head>
@@ -44,21 +45,21 @@
                 </nav>
             </div>
             <div class="flex items-center space-x-4">
-                <button class="p-2 rounded-full hover:bg-neutral-100 relative">
+                <button id="notification-btn" class="p-2 rounded-full hover:bg-neutral-100 relative">
                     <i class="fa fa-bell text-neutral-500"></i>
-                    <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    <span id="notification-badge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
                 </button>
                 <div class="relative group">
-                    <button class="flex items-center space-x-2">
+                    <button id="user-menu-btn" class="flex items-center space-x-2">
                         <img src="https://picsum.photos/id/64/40/40" alt="用户头像" class="w-8 h-8 rounded-full object-cover">
                         <span class="hidden sm:block text-sm font-medium">张三</span>
                         <i class="fa fa-chevron-down text-xs text-neutral-500"></i>
                     </button>
-                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all">
+                    <div id="user-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all">
                         <a href="#" class="block px-4 py-2 text-sm hover:bg-neutral-100"><i class="fa fa-user-circle mr-2"></i>个人中心</a>
                         <a href="#" class="block px-4 py-2 text-sm hover:bg-neutral-100"><i class="fa fa-cog mr-2"></i>设置</a>
                         <div class="border-t border-neutral-200 my-1"></div>
-                        <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-neutral-100"><i class="fa fa-sign-out mr-2"></i>退出登录</a>
+                        <a href="#" id="logout-btn" class="block px-4 py-2 text-sm text-red-600 hover:bg-neutral-100"><i class="fa fa-sign-out mr-2"></i>退出登录</a>
                     </div>
                 </div>
                 <button class="md:hidden p-2 rounded-md hover:bg-neutral-100">
@@ -76,18 +77,19 @@
                 <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
                     <div class="flex flex-col items-center text-center">
                         <div class="relative mb-4">
-                            <img src="https://picsum.photos/id/64/120/120" alt="用户头像" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md">
-                            <button class="absolute bottom-0 right-0 bg-primary text-white rounded-full p-2 shadow-lg hover:scale-110 transition-transform">
+                            <img id="profile-image" src="https://picsum.photos/id/64/120/120" alt="用户头像" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md">
+                            <label for="profile-image-upload" class="absolute bottom-0 right-0 bg-primary text-white rounded-full p-2 shadow-lg hover:scale-110 transition-transform cursor-pointer">
                                 <i class="fa fa-camera"></i>
-                            </button>
+                                <input id="profile-image-upload" type="file" accept="image/*" class="hidden">
+                            </label>
                         </div>
                         <h1 class="text-xl font-bold mb-1">张三</h1>
                         <p class="text-neutral-500 mb-4">活跃用户</p>
                         <div class="flex justify-center space-x-3 mb-6">
-                            <button class="bg-primary text-white px-4 py-2 rounded-lg shadow hover:bg-primary/90 transition-colors">
+                            <button id="edit-profile-btn" class="bg-primary text-white px-4 py-2 rounded-lg shadow hover:bg-primary/90 transition-colors">
                                 <i class="fa fa-pencil mr-2"></i>编辑资料
                             </button>
-                            <button class="bg-white text-primary border border-primary px-4 py-2 rounded-lg hover:bg-primary/5 transition-colors">
+                            <button id="settings-btn" class="bg-white text-primary border border-primary px-4 py-2 rounded-lg hover:bg-primary/5 transition-colors">
                                 <i class="fa fa-cog mr-2"></i>设置
                             </button>
                         </div>
@@ -101,7 +103,7 @@
 
                 <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
                     <h2 class="text-lg font-semibold mb-4 flex items-center"><i class="fa fa-user-circle text-primary mr-2"></i>个人信息</h2>
-                    <div class="space-y-3">
+                    <div id="profile-info-view" class="space-y-3">
                         <div class="flex items-center"><span class="w-24 text-neutral-500">用户名</span><span>张三</span></div>
                         <div class="flex items-center"><span class="w-24 text-neutral-500">性别</span><span>男</span></div>
                         <div class="flex items-center"><span class="w-24 text-neutral-500">年龄</span><span>28岁</span></div>
@@ -109,6 +111,42 @@
                         <div class="flex items-center"><span class="w-24 text-neutral-500">手机号</span><span>138****6789</span></div>
                         <div class="flex items-center"><span class="w-24 text-neutral-500">邮箱</span><span>example@mail.com</span></div>
                         <div class="flex items-center"><span class="w-24 text-neutral-500">注册时间</span><span>2024-03-15</span></div>
+                    </div>
+                    <div id="profile-info-edit" class="space-y-3 hidden">
+                        <div class="mb-3">
+                            <label class="block text-sm font-medium text-neutral-700 mb-1">用户名</label>
+                            <input type="text" value="张三" class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-3">
+                            <div>
+                                <label class="block text-sm font-medium text-neutral-700 mb-1">性别</label>
+                                <select class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50">
+                                    <option value="male">男</option>
+                                    <option value="female">女</option>
+                                    <option value="other">其他</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-neutral-700 mb-1">年龄</label>
+                                <input type="number" value="28" class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="block text-sm font-medium text-neutral-700 mb-1">职业</label>
+                            <input type="text" value="软件工程师" class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50">
+                        </div>
+                        <div class="mb-3">
+                            <label class="block text-sm font-medium text-neutral-700 mb-1">手机号</label>
+                            <input type="tel" value="138****6789" class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50">
+                        </div>
+                        <div class="mb-3">
+                            <label class="block text-sm font-medium text-neutral-700 mb-1">邮箱</label>
+                            <input type="email" value="example@mail.com" class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50">
+                        </div>
+                        <div class="flex justify-end space-x-2 mt-4">
+                            <button id="cancel-edit-btn" class="px-4 py-2 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors">取消</button>
+                            <button id="save-profile-btn" class="px-4 py-2 bg-primary text-white rounded-lg shadow hover:bg-primary/90 transition-colors">保存</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -119,8 +157,11 @@
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-lg font-semibold flex items-center"><i class="fa fa-file-text-o text-primary mr-2"></i>我的帖子</h2>
                         <div class="flex space-x-2">
-                            <button class="px-4 py-2 bg-primary text-white rounded-lg shadow hover:bg-primary/90 transition-colors">
-                                <i class="fa fa-plus mr-2"></i>发布新帖
+                            <button
+                              id="post-btn"
+                              class="px-4 py-2 bg-primary text-white rounded-lg shadow hover:bg-primary/90 transition-colors"
+                            >
+                              <i class="fa fa-plus mr-2"></i>发布新帖
                             </button>
                         </div>
                     </div>
@@ -134,65 +175,65 @@
                         </div>
                     </div>
 
-                    <div class="space-y-4">
-                        <div class="p-4 hover:bg-neutral-50 rounded-lg transition-colors">
+                    <div id="posts-container" class="space-y-4">
+                        <div class="p-4 hover:bg-neutral-50 rounded-lg transition-colors post-item">
                             <div class="flex justify-between items-start">
                                 <div class="flex-grow mr-4">
-                                    <h3 class="font-medium text-lg mb-2 hover:text-primary transition-colors cursor-pointer">如何高效学习前端开发？分享我的经验</h3>
-                                    <p class="text-neutral-500 text-sm mb-3 line-clamp-2">前端开发是一个不断发展的领域，掌握正确的学习方法至关重要。本文分享了我从零基础到成为前端工程师的学习路径和心得体会...</p>
+                                    <h3 class="font-medium text-lg mb-2 hover:text-primary transition-colors cursor-pointer post-title">如何高效学习前端开发？分享我的经验</h3>
+                                    <p class="text-neutral-500 text-sm mb-3 line-clamp-2 post-content">前端开发是一个不断发展的领域，掌握正确的学习方法至关重要。本文分享了我从零基础到成为前端工程师的学习路径和心得体会...</p>
                                     <div class="flex items-center text-sm text-neutral-500">
-                                        <span class="mr-4"><i class="fa fa-eye mr-1"></i> 328</span>
-                                        <span class="mr-4"><i class="fa fa-comment mr-1"></i> 42</span>
-                                        <span><i class="fa fa-thumbs-up mr-1"></i> 89</span>
+                                        <span class="mr-4"><i class="fa fa-eye mr-1"></i> <span class="post-views">328</span></span>
+                                        <span class="mr-4"><i class="fa fa-comment mr-1"></i> <span class="post-comments">42</span></span>
+                                        <span><i class="fa fa-thumbs-up mr-1"></i> <span class="post-likes">89</span></span>
                                     </div>
                                 </div>
                                 <div class="flex flex-col items-end">
-                                    <span class="text-xs text-neutral-400">2025-05-10</span>
+                                    <span class="text-xs text-neutral-400 post-date">2025-05-10</span>
                                     <div class="flex space-x-2 mt-2">
-                                        <button class="text-neutral-500 hover:text-primary transition-colors"><i class="fa fa-pencil"></i></button>
-                                        <button class="text-neutral-500 hover:text-red-500 transition-colors"><i class="fa fa-trash"></i></button>
+                                        <button class="edit-post-btn text-neutral-500 hover:text-primary transition-colors"><i class="fa fa-pencil"></i></button>
+                                        <button class="delete-post-btn text-neutral-500 hover:text-red-500 transition-colors"><i class="fa fa-trash"></i></button>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="p-4 hover:bg-neutral-50 rounded-lg transition-colors">
+                        <div class="p-4 hover:bg-neutral-50 rounded-lg transition-colors post-item">
                             <div class="flex justify-between items-start">
                                 <div class="flex-grow mr-4">
-                                    <h3 class="font-medium text-lg mb-2 hover:text-primary transition-colors cursor-pointer">Tailwind CSS 3.0 新特性详解</h3>
-                                    <p class="text-neutral-500 text-sm mb-3 line-clamp-2">Tailwind CSS 3.0 带来了许多令人兴奋的新特性，包括JIT编译器的改进、新的颜色系统、更强大的响应式设计工具...</p>
+                                    <h3 class="font-medium text-lg mb-2 hover:text-primary transition-colors cursor-pointer post-title">Tailwind CSS 3.0 新特性详解</h3>
+                                    <p class="text-neutral-500 text-sm mb-3 line-clamp-2 post-content">Tailwind CSS 3.0 带来了许多令人兴奋的新特性，包括JIT编译器的改进、新的颜色系统、更强大的响应式设计工具...</p>
                                     <div class="flex items-center text-sm text-neutral-500">
-                                        <span class="mr-4"><i class="fa fa-eye mr-1"></i> 256</span>
-                                        <span class="mr-4"><i class="fa fa-comment mr-1"></i> 31</span>
-                                        <span><i class="fa fa-thumbs-up mr-1"></i> 73</span>
+                                        <span class="mr-4"><i class="fa fa-eye mr-1"></i> <span class="post-views">256</span></span>
+                                        <span class="mr-4"><i class="fa fa-comment mr-1"></i> <span class="post-comments">31</span></span>
+                                        <span><i class="fa fa-thumbs-up mr-1"></i> <span class="post-likes">73</span></span>
                                     </div>
                                 </div>
                                 <div class="flex flex-col items-end">
-                                    <span class="text-xs text-neutral-400">2025-05-05</span>
+                                    <span class="text-xs text-neutral-400 post-date">2025-05-05</span>
                                     <div class="flex space-x-2 mt-2">
-                                        <button class="text-neutral-500 hover:text-primary transition-colors"><i class="fa fa-pencil"></i></button>
-                                        <button class="text-neutral-500 hover:text-red-500 transition-colors"><i class="fa fa-trash"></i></button>
+                                        <button class="edit-post-btn text-neutral-500 hover:text-primary transition-colors"><i class="fa fa-pencil"></i></button>
+                                        <button class="delete-post-btn text-neutral-500 hover:text-red-500 transition-colors"><i class="fa fa-trash"></i></button>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="p-4 hover:bg-neutral-50 rounded-lg transition-colors">
+                        <div class="p-4 hover:bg-neutral-50 rounded-lg transition-colors post-item">
                             <div class="flex justify-between items-start">
                                 <div class="flex-grow mr-4">
-                                    <h3 class="font-medium text-lg mb-2 hover:text-primary transition-colors cursor-pointer">React 18 新特性与性能优化</h3>
-                                    <p class="text-neutral-500 text-sm mb-3 line-clamp-2">React 18 带来了自动批处理、并发渲染等重要特性，本文详细介绍了这些新特性以及如何利用它们优化你的React应用...</p>
+                                    <h3 class="font-medium text-lg mb-2 hover:text-primary transition-colors cursor-pointer post-title">React 18 新特性与性能优化</h3>
+                                    <p class="text-neutral-500 text-sm mb-3 line-clamp-2 post-content">React 18 带来了自动批处理、并发渲染等重要特性，本文详细介绍了这些新特性以及如何利用它们优化你的React应用...</p>
                                     <div class="flex items-center text-sm text-neutral-500">
-                                        <span class="mr-4"><i class="fa fa-eye mr-1"></i> 412</span>
-                                        <span class="mr-4"><i class="fa fa-comment mr-1"></i> 56</span>
-                                        <span><i class="fa fa-thumbs-up mr-1"></i> 124</span>
+                                        <span class="mr-4"><i class="fa fa-eye mr-1"></i> <span class="post-views">412</span></span>
+                                        <span class="mr-4"><i class="fa fa-comment mr-1"></i> <span class="post-comments">56</span></span>
+                                        <span><i class="fa fa-thumbs-up mr-1"></i> <span class="post-likes">124</span></span>
                                     </div>
                                 </div>
                                 <div class="flex flex-col items-end">
-                                    <span class="text-xs text-neutral-400">2025-04-28</span>
+                                    <span class="text-xs text-neutral-400 post-date">2025-04-28</span>
                                     <div class="flex space-x-2 mt-2">
-                                        <button class="text-neutral-500 hover:text-primary transition-colors"><i class="fa fa-pencil"></i></button>
-                                        <button class="text-neutral-500 hover:text-red-500 transition-colors"><i class="fa fa-trash"></i></button>
+                                        <button class="edit-post-btn text-neutral-500 hover:text-primary transition-colors"><i class="fa fa-pencil"></i></button>
+                                        <button class="delete-post-btn text-neutral-500 hover:text-red-500 transition-colors"><i class="fa fa-trash"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -200,7 +241,7 @@
                     </div>
 
                     <div class="mt-6 flex justify-center">
-                        <button class="px-4 py-2 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors">
+                        <button id="load-more-btn" class="px-4 py-2 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors">
                             加载更多 <i class="fa fa-chevron-down ml-1"></i>
                         </button>
                     </div>
@@ -233,10 +274,449 @@
         </div>
     </footer>
 
+    <!-- 通知模态框 -->
+    <div id="notification-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="absolute inset-0 bg-black/50 modal-backdrop"></div>
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 relative z-10 transform transition-all">
+            <div class="flex justify-between items-center p-4 border-b border-neutral-200">
+                <h3 class="font-semibold text-lg">通知</h3>
+                <button id="close-notification-btn" class="text-neutral-500 hover:text-neutral-700">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="p-4 max-h-[400px] overflow-y-auto">
+                <div class="space-y-4">
+                    <div class="flex items-start p-3 bg-neutral-50 rounded-lg">
+                        <div class="flex-shrink-0 mr-3">
+                            <img src="https://picsum.photos/id/237/40/40" alt="用户头像" class="w-8 h-8 rounded-full object-cover">
+                        </div>
+                        <div>
+                            <p class="text-sm"><span class="font-medium">李四</span> 回复了你的帖子 <span class="text-primary">《React 18 新特性与性能优化》</span></p>
+                            <p class="text-xs text-neutral-500 mt-1">2分钟前</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start p-3 bg-neutral-50 rounded-lg">
+                        <div class="flex-shrink-0 mr-3">
+                            <img src="https://picsum.photos/id/1027/40/40" alt="用户头像" class="w-8 h-8 rounded-full object-cover">
+                        </div>
+                        <div>
+                            <p class="text-sm"><span class="font-medium">王五</span> 赞了你的评论</p>
+                            <p class="text-xs text-neutral-500 mt-1">1小时前</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start p-3 bg-neutral-50 rounded-lg">
+                        <div class="flex-shrink-0 mr-3">
+                            <img src="https://picsum.photos/id/1062/40/40" alt="用户头像" class="w-8 h-8 rounded-full object-cover">
+                        </div>
+                        <div>
+                            <p class="text-sm"><span class="font-medium">论坛管理员</span> 置顶了你的帖子 <span class="text-primary">《如何高效学习前端开发？》</span></p>
+                            <p class="text-xs text-neutral-500 mt-1">昨天</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-t border-neutral-200">
+                <button class="w-full text-center text-primary text-sm hover:text-primary/80">查看全部通知</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 发布新帖模态框 -->
+    <div id="new-post-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="absolute inset-0 bg-black/50 modal-backdrop"></div>
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4 relative z-10 transform transition-all">
+            <div class="flex justify-between items-center p-4 border-b border-neutral-200">
+                <h3 class="font-semibold text-lg">发布新帖</h3>
+                <button id="close-new-post-btn" class="text-neutral-500 hover:text-neutral-700">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="p-4">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-neutral-700 mb-1">标题</label>
+                    <input type="text" id="new-post-title" class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="请输入帖子标题">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-neutral-700 mb-1">内容</label>
+                    <textarea id="new-post-content" rows="8" class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="请输入帖子内容..."></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-neutral-700 mb-1">分类</label>
+                    <select class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50">
+                        <option value="frontend">休闲运动</option>
+                        <option value="backend">日常通勤</option>
+                        <option value="mobile">休闲度假</option>
+                        <option value="devops">乐享派对</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button id="save-draft-btn" class="px-4 py-2 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors">保存草稿</button>
+                    <button id="publish-post-btn" class="px-4 py-2 bg-primary text-white rounded-lg shadow hover:bg-primary/90 transition-colors">发布</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑帖子模态框 -->
+    <div id="edit-post-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="absolute inset-0 bg-black/50 modal-backdrop"></div>
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4 relative z-10 transform transition-all">
+            <div class="flex justify-between items-center p-4 border-b border-neutral-200">
+                <h3 class="font-semibold text-lg">编辑帖子</h3>
+                <button id="close-edit-post-btn" class="text-neutral-500 hover:text-neutral-700">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="p-4">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-neutral-700 mb-1">标题</label>
+                    <input type="text" id="edit-post-title" class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="请输入帖子标题">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-neutral-700 mb-1">内容</label>
+                    <textarea id="edit-post-content" rows="8" class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="请输入帖子内容..."></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-neutral-700 mb-1">分类</label>
+                    <select id="edit-post-category" class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50">
+                        <option value="frontend">休闲运动</option>
+                        <option value="backend">日常通勤</option>
+                        <option value="mobile">休闲度假</option>
+                        <option value="devops">乐享派对</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button id="delete-post-confirm-btn" class="px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-50 transition-colors">删除</button>
+                    <button id="update-post-btn" class="px-4 py-2 bg-primary text-white rounded-lg shadow hover:bg-primary/90 transition-colors">更新</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // 导航栏滚动效果
         window.addEventListener('scroll', function() {
             const header = document.querySelector('header');
             if (window.scrollY > 10) {
                 header.classList.add('shadow-md');
-                header.classList.remove('shadow
+                header.classList.remove('shadow-sm');
+            } else {
+                header.classList.remove('shadow-md');
+                header.classList.add('shadow-sm');
+            }
+        });
+
+        // 用户菜单下拉效果
+        document.getElementById('user-menu-btn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            const dropdown = document.getElementById('user-dropdown');
+            dropdown.classList.toggle('invisible');
+            dropdown.classList.toggle('opacity-0');
+        });
+
+        // 点击页面其他地方关闭用户菜单
+        document.addEventListener('click', function() {
+            const dropdown = document.getElementById('user-dropdown');
+            if (!dropdown.classList.contains('invisible')) {
+                dropdown.classList.add('invisible');
+                dropdown.classList.add('opacity-0');
+            }
+        });
+
+        // 退出登录功能
+        document.getElementById('logout-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('确定要退出登录吗？')) {
+                // 模拟退出登录，实际项目中应该发送请求到后端
+                console.log('用户已退出登录');
+                // 跳转到登录页面
+                window.location.href = '/login';
+            }
+        });
+
+        // 通知模态框
+        const notificationBtn = document.getElementById('notification-btn');
+        const notificationModal = document.getElementById('notification-modal');
+        const closeNotificationBtn = document.getElementById('close-notification-btn');
+
+        notificationBtn.addEventListener('click', function() {
+            notificationModal.classList.remove('hidden');
+            // 移除通知徽章
+            document.getElementById('notification-badge').classList.add('hidden');
+        });
+
+        closeNotificationBtn.addEventListener('click', function() {
+            notificationModal.classList.add('hidden');
+        });
+
+        // 点击模态框外部关闭通知模态框
+        notificationModal.addEventListener('click', function(e) {
+            if (e.target === notificationModal) {
+                notificationModal.classList.add('hidden');
+            }
+        });
+
+        // 发布新帖模态框
+        const postBtn = document.getElementById('post-btn');
+        const newPostModal = document.getElementById('new-post-modal');
+        const closeNewPostBtn = document.getElementById('close-new-post-btn');
+        const saveDraftBtn = document.getElementById('save-draft-btn');
+        const publishPostBtn = document.getElementById('publish-post-btn');
+
+        postBtn.addEventListener('click', function() {
+            newPostModal.classList.remove('hidden');
+        });
+
+        closeNewPostBtn.addEventListener('click', function() {
+            newPostModal.classList.add('hidden');
+        });
+
+        saveDraftBtn.addEventListener('click', function() {
+            const title = document.getElementById('new-post-title').value;
+            const content = document.getElementById('new-post-content').value;
+
+            if (!title) {
+                alert('请输入帖子标题');
+                return;
+            }
+
+            // 模拟保存草稿
+            console.log('保存草稿:', { title, content });
+            alert('草稿已保存');
+            newPostModal.classList.add('hidden');
+        });
+
+        publishPostBtn.addEventListener('click', function() {
+            const title = document.getElementById('new-post-title').value;
+            const content = document.getElementById('new-post-content').value;
+
+            if (!title) {
+                alert('请输入帖子标题');
+                return;
+            }
+
+            if (!content) {
+                alert('请输入帖子内容');
+                return;
+            }
+
+            // 模拟发布帖子
+            console.log('发布帖子:', { title, content });
+            alert('帖子发布成功');
+            newPostModal.classList.add('hidden');
+
+            // 清空输入框
+            document.getElementById('new-post-title').value = '';
+            document.getElementById('new-post-content').value = '';
+
+            // 这里应该添加新帖子到帖子列表中
+            addNewPost(title, content);
+        });
+
+        // 点击模态框外部关闭发布新帖模态框
+        newPostModal.addEventListener('click', function(e) {
+            if (e.target === newPostModal) {
+                newPostModal.classList.add('hidden');
+            }
+        });
+
+        // 编辑资料功能
+        const editProfileBtn = document.getElementById('edit-profile-btn');
+        const profileInfoView = document.getElementById('profile-info-view');
+        const profileInfoEdit = document.getElementById('profile-info-edit');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+        const saveProfileBtn = document.getElementById('save-profile-btn');
+
+        editProfileBtn.addEventListener('click', function() {
+            profileInfoView.classList.add('hidden');
+            profileInfoEdit.classList.remove('hidden');
+        });
+
+        cancelEditBtn.addEventListener('click', function() {
+            profileInfoEdit.classList.add('hidden');
+            profileInfoView.classList.remove('hidden');
+        });
+
+        saveProfileBtn.addEventListener('click', function() {
+            // 模拟保存个人资料
+            console.log('保存个人资料');
+            alert('个人资料已更新');
+            profileInfoEdit.classList.add('hidden');
+            profileInfoView.classList.remove('hidden');
+        });
+
+        // 上传头像功能
+        const profileImageUpload = document.getElementById('profile-image-upload');
+        const profileImage = document.getElementById('profile-image');
+
+        profileImageUpload.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    profileImage.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 编辑帖子功能
+        const editPostModal = document.getElementById('edit-post-modal');
+        const closeEditPostBtn = document.getElementById('close-edit-post-btn');
+        const updatePostBtn = document.getElementById('update-post-btn');
+        const deletePostConfirmBtn = document.getElementById('delete-post-confirm-btn');
+        let currentPostElement = null;
+
+        // 为所有编辑按钮添加事件监听
+        document.querySelectorAll('.edit-post-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                currentPostElement = this.closest('.post-item');
+                const title = currentPostElement.querySelector('.post-title').textContent;
+                const content = currentPostElement.querySelector('.post-content').textContent;
+
+                document.getElementById('edit-post-title').value = title;
+                document.getElementById('edit-post-content').value = content;
+
+                editPostModal.classList.remove('hidden');
+            });
+        });
+
+        closeEditPostBtn.addEventListener('click', function() {
+            editPostModal.classList.add('hidden');
+        });
+
+        updatePostBtn.addEventListener('click', function() {
+            if (!currentPostElement) return;
+
+            const title = document.getElementById('edit-post-title').value;
+            const content = document.getElementById('edit-post-content').value;
+
+            if (!title) {
+                alert('请输入帖子标题');
+                return;
+            }
+
+            if (!content) {
+                alert('请输入帖子内容');
+                return;
+            }
+
+            // 更新帖子内容
+            currentPostElement.querySelector('.post-title').textContent = title;
+            currentPostElement.querySelector('.post-content').textContent = content;
+
+            alert('帖子已更新');
+            editPostModal.classList.add('hidden');
+        });
+
+        // 点击模态框外部关闭编辑帖子模态框
+        editPostModal.addEventListener('click', function(e) {
+            if (e.target === editPostModal) {
+                editPostModal.classList.add('hidden');
+            }
+        });
+
+        // 删除帖子功能
+        document.querySelectorAll('.delete-post-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (confirm('确定要删除这篇帖子吗？')) {
+                    this.closest('.post-item').remove();
+                    alert('帖子已删除');
+                }
+            });
+        });
+
+        deletePostConfirmBtn.addEventListener('click', function() {
+            if (confirm('确定要删除这篇帖子吗？')) {
+                if (currentPostElement) {
+                    currentPostElement.remove();
+                    alert('帖子已删除');
+                    editPostModal.classList.add('hidden');
+                }
+            }
+        });
+
+        // 加载更多功能
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        let isLoading = false;
+
+        loadMoreBtn.addEventListener('click', function() {
+            if (isLoading) return;
+
+            isLoading = true;
+            loadMoreBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i>加载中...';
+
+            // 模拟加载延迟
+            setTimeout(function() {
+                // 添加新帖子
+                addNewPost('Vue 3 与组合式 API 入门指南', 'Vue 3 带来了组合式 API，这是一种全新的组织和复用组件逻辑的方式...');
+                addNewPost('Node.js 性能优化技巧', '本文将分享一些 Node.js 应用性能优化的实用技巧和最佳实践...');
+
+                isLoading = false;
+                loadMoreBtn.innerHTML = '加载更多 <i class="fa fa-chevron-down ml-1"></i>';
+
+                // 如果达到最大数量，隐藏加载更多按钮
+                if (document.querySelectorAll('.post-item').length >= 10) {
+                    loadMoreBtn.disabled = true;
+                    loadMoreBtn.innerHTML = '没有更多帖子了';
+                    loadMoreBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+            }, 1500);
+        });
+
+        // 添加新帖子到列表
+        function addNewPost(title, content) {
+            const postsContainer = document.getElementById('posts-container');
+
+            // 创建新帖子元素
+            const newPost = document.createElement('div');
+            newPost.className = 'p-4 hover:bg-neutral-50 rounded-lg transition-colors post-item';
+            newPost.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div class="flex-grow mr-4">
+                        <h3 class="font-medium text-lg mb-2 hover:text-primary transition-colors cursor-pointer post-title">${title}</h3>
+                        <p class="text-neutral-500 text-sm mb-3 line-clamp-2 post-content">${content}</p>
+                        <div class="flex items-center text-sm text-neutral-500">
+                            <span class="mr-4"><i class="fa fa-eye mr-1"></i> <span class="post-views">0</span></span>
+                            <span class="mr-4"><i class="fa fa-comment mr-1"></i> <span class="post-comments">0</span></span>
+                            <span><i class="fa fa-thumbs-up mr-1"></i> <span class="post-likes">0</span></span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-end">
+                        <span class="text-xs text-neutral-400 post-date">${new Date().toISOString().split('T')[0]}</span>
+                        <div class="flex space-x-2 mt-2">
+                            <button class="edit-post-btn text-neutral-500 hover:text-primary transition-colors"><i class="fa fa-pencil"></i></button>
+                            <button class="delete-post-btn text-neutral-500 hover:text-red-500 transition-colors"><i class="fa fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // 添加到容器的最前面
+            postsContainer.insertBefore(newPost, postsContainer.firstChild);
+
+            // 为新添加的帖子绑定编辑和删除事件
+            const editBtn = newPost.querySelector('.edit-post-btn');
+            const deleteBtn = newPost.querySelector('.delete-post-btn');
+
+            editBtn.addEventListener('click', function() {
+                currentPostElement = this.closest('.post-item');
+                const title = currentPostElement.querySelector('.post-title').textContent;
+                const content = currentPostElement.querySelector('.post-content').textContent;
+
+                document.getElementById('edit-post-title').value = title;
+                document.getElementById('edit-post-content').value = content;
+
+                editPostModal.classList.remove('hidden');
+            });
+
+            deleteBtn.addEventListener('click', function() {
+                if (confirm('确定要删除这篇帖子吗？')) {
+                    this.closest('.post-item').remove();
+                    alert('帖子已删除');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
