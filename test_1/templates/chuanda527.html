@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>社交平台</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#165DFF',
+            secondary: '#FF7D00',
+            neutral: {
+              100: '#F5F7FA',
+              200: '#E5E6EB',
+              300: '#C9CDD4',
+              400: '#86909C',
+              500: '#4E5969',
+              600: '#272E3B',
+              700: '#1D2129',
+            }
+          },
+          fontFamily: {
+            inter: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .text-shadow {
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      .like-animation {
+        animation: like 0.5s ease-in-out;
+      }
+      @keyframes like {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.3); }
+        100% { transform: scale(1); }
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    }
+  </style>
+</head>
+<body class="font-inter bg-neutral-100 text-neutral-700 min-h-screen flex flex-col">
+  <!-- 导航栏 -->
+  <header class="bg-white shadow-sm fixed w-full top-0 z-50 transition-all duration-300" id="navbar">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <i class="fa-solid fa-comments text-primary text-2xl"></i>
+        <span class="text-xl font-bold text-primary">社交圈</span>
+      </div>
+
+      <div class="hidden md:flex items-center space-x-6">
+        <a href="#" class="text-primary font-medium">首页</a>
+        <a href="#" class="text-neutral-500 hover:text-primary transition-colors">发现</a>
+        <a href="#" class="text-neutral-500 hover:text-primary transition-colors">消息</a>
+        <a href="#" class="text-neutral-500 hover:text-primary transition-colors">个人中心</a>
+      </div>
+
+      <div class="flex items-center space-x-4">
+        <div class="relative hidden md:block">
+          <input type="text" placeholder="搜索内容..." class="pl-10 pr-4 py-2 rounded-full bg-neutral-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 w-64 transition-all">
+          <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"></i>
+        </div>
+        <button class="md:hidden text-neutral-600 hover:text-primary transition-colors">
+          <i class="fa-solid fa-search text-xl"></i>
+        </button>
+        <button class="relative text-neutral-600 hover:text-primary transition-colors">
+          <i class="fa-solid fa-bell text-xl"></i>
+          <span class="absolute -top-1 -right-1 bg-secondary text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
+        </button>
+        <div class="relative group">
+          <img src="https://picsum.photos/200/200?random=1" alt="用户头像" class="h-9 w-9 rounded-full object-cover border-2 border-white shadow-sm cursor-pointer">
+          <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right scale-95 group-hover:scale-100">
+            <a href="#" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">个人资料</a>
+            <a href="#" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">我的收藏</a>
+            <a href="#" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">设置</a>
+            <div class="border-t border-neutral-200 my-1"></div>
+            <a href="#" class="block px-4 py-2 text-sm text-red-500 hover:bg-neutral-100">退出登录</a>
+          </div>
+        </div>
+        <button class="md:hidden text-neutral-600 hover:text-primary transition-colors">
+          <i class="fa-solid fa-bars text-xl"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主内容区 -->
+  <main class="flex-grow pt-20 pb-10">
+    <div class="container mx-auto px-4 flex flex-col lg:flex-row gap-6">
+      <!-- 左侧边栏（完全移除内容，仅保留空容器） -->
+      <aside class="w-full lg:w-64 flex-shrink-0 hidden lg:block">
+        <div class="bg-white rounded-xl shadow-sm p-4 sticky top-24">
+          <!-- 移除所有内容 -->
+        </div>
+      </aside>
+
+      <!-- 中间内容区（宽度扩展至全屏，移除左侧边栏后无需计算宽度） -->
+      <div class="w-full lg:w-full">
+
+        <!-- 帖子列表 -->
+        <div class="space-y-6" id="posts-container">
+          <!-- 帖子1 - 休闲运动风格 -->
+          <article class="bg-white rounded-xl shadow-sm overflow-hidden transform transition-all duration-300 hover:shadow-md card-hover">
+            <div class="p-4">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center space-x-3">
+                  <img src="https://picsum.photos/200/200?random=2" alt="用户头像" class="h-10 w-10 rounded-full object-cover">
+                  <div>
+                    <h3 class="font-semibold text-neutral-700">张三</h3>
+                    <p class="text-xs text-neutral-500">2小时前</p>
+                  </div>
+                </div>
+                <button class="text-neutral-400 hover:text-neutral-600 transition-colors">
+                  <i class="fa-solid fa-ellipsis-h"></i>
+                </button>
+              </div>
+
+              <div class="mb-3">
+                <p class="text-neutral-700">今天给大家分享我的休闲运动风穿搭😎。一件宽松的纯棉连帽卫衣，搭配一条束脚运动裤，再加上一双轻便的运动鞋，既舒适又时尚，非常适合运动或者日常出行。</p>
+              </div>
+
+              <div class="rounded-lg overflow-hidden mb-4">
+                <img src="https://picsum.photos/800/400?random=1" alt="休闲运动风穿搭" class="w-full h-auto object-cover">
+              </div>
+
+              <div class="flex items-center justify-between text-sm text-neutral-500 border-t border-b border-neutral-100 py-2">
+                <div class="flex items-center space-x-4">
+                  <button class="like-btn flex items-center space-x-1 text-neutral-500" data-post-id="1">
+                    <i class="fa-regular fa-heart"></i>
+                    <span class="like-count">128</span>
+                  </button>
+                  <button class="comment-btn flex items-center space-x-1" data-post-id="1">
+                    <i class="fa-regular fa-comment"></i>
+                    <span class="comment-count">24</span>
+                  </button>
+                </div>
+                <div class="flex items-center space-x-4">
+                  <button class="flex items-center space-x-1">
+                    <i class="fa-regular fa-share-from-square"></i>
+                    <span>分享</span>
+                  </button>
+                  <button class="flex items-center space-x-1">
+                    <i class="fa-regular fa-bookmark"></i>
+                    <span>收藏</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 评论区域 -->
+              <div class="comments-container mt-4 hidden" id="comments-1">
+                <div class="space-y-3 max-h-96 overflow-y-auto scrollbar-hide pr-2">
+                  <!-- 评论1 -->
+                  <div class="flex space-x-3">
+                    <img src="https://picsum.photos/200/200?random=3" alt="评论用户头像" class="h-8 w-8 rounded-full object-cover">
+                    <div class="flex-grow">
+                      <div class="bg-neutral-100 rounded-lg p-3">
+                        <div class="flex items-center justify-between mb-1">
+                          <h4 class="font-medium text-sm">李四</h4>
+                          <span class="text-xs text-neutral-500">1小时前</span>
+                        </div>
+                        <p class="text-sm text-neutral-700">这套穿搭真的很赞！我也喜欢这种舒适的风格，运动的时候再也不用担心束缚感啦👍。</p>
+                      </div>
+                      <div class="flex items-center space-x-3 mt-1 text-xs text-neutral-500">
+                        <button class="like-comment-btn hover:text-primary transition-colors" data-comment-id="1">
+                          <i class="fa-regular fa-heart"></i> 15
+                        </button>
+                        <button class="reply-btn hover:text-primary transition-colors">
+                          回复
+                        </button>
+                      </div>
+
+                      <!-- 回复区域 -->
+                      <div class="mt-2 ml-6 space-y-2">
+                        <div class="flex space-x-2">
+                          <img src="https://picsum.photos/200/200?random=2" alt="回复用户头像" class="h-6 w-6 rounded-full object-cover">
+                          <div class="flex-grow">
+                            <div class="bg-neutral-100 rounded-lg p-2">
+                              <div class="flex items-center justify-between mb-1">
+                                <h4 class="font-medium text-xs">张三 <span class="text-neutral-500">@李四</span></h4>
+                                <span class="text-xs text-neutral-500">45分钟前</span>
+                              </div>
+                              <p class="text-xs text-neutral-700">哈哈，同感！这种风格就是要舒适又自在😜。</p>
+                            </div>
+                            <div class="flex items-center space-x-3 mt-1 text-xs text-neutral-500">
+                              <button class="like-comment-btn hover:text-primary transition-colors" data-comment-id="2">
+                                <i class="fa-regular fa-heart"></i> 8
+                              </button>
+                              <button class="reply-btn hover:text-primary transition-colors">
+                                回复
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 评论2 -->
+                  <div class="flex items-center space-x-3">
+                    <img src="https://picsum.photos/200/200?random=4" alt="评论用户头像" class="h-8 w-8 rounded-full object-cover">
+                    <div class="flex-grow">
+                      <div class="bg-neutral-100 rounded-lg p-3">
+                        <div class="flex items-center justify-between mb-1">
+                          <h4 class="font-medium text-sm">王五</h4>
+                          <span class="text-xs text-neutral-500">50分钟前</span>
+                        </div>
+                        <p class="text-sm text-neutral-700">请问卫衣是什么牌子的呀？我也想买一件。</p>
+                      </div>
+                      <div class="flex items-center space-x-3 mt-1 text-xs text-neutral-500">
+                        <button class="like-comment-btn hover:text-primary transition-colors" data-comment-id="3">
+                          <i class="fa-regular fa-heart"></i> 5
+                        </button>
+                        <button class="reply-btn hover:text-primary transition-colors">
+                          回复
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 发表评论 -->
+                <div class="mt-4 pt-3 border-t border-neutral-100">
+                  <div class="flex space-x-3">
+                    <img src="https://picsum.photos/200/200?random=1" alt="用户头像" class="h-8 w-8 rounded-full object-cover">
+                    <div class="flex-grow">
+                      <div class="relative">
+                        <input type="text" placeholder="添加评论..." class="w-full border border-neutral-200 rounded-full py-2 px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all">
+                        <button class="absolute right-2 top-1/2 -translate-y-1/2 text-primary hover:text-primary/80 transition-colors">
+                          <i class="fa-regular fa-paper-plane"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- 帖子2 - 日常通勤风格 -->
+          <article class="bg-white rounded-xl shadow-sm overflow-hidden transform transition-all duration-300 hover:shadow-md card-hover">
+            <div class="p-4">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center space-x-3">
+                  <img src="https://picsum.photos/200/200?random=5" alt="用户头像" class="h-10 w-10 rounded-full object-cover">
+                  <div>
+                    <h3 class="font-semibold text-neutral-700">李四</h3>
+                    <p class="text-xs text-neutral-500">3小时前</p>
+                  </div>
+                </div>
+                <button class="text-neutral-400 hover:text-neutral-600 transition-colors">
+                  <i class="fa-solid fa-ellipsis-h"></i>
+                </button>
+              </div>
+
+              <div class="mb-3">
+                <p class="text-neutral-700">日常通勤的穿搭也不能马虎😏。一件简约的白色衬衫，搭配一条黑色西装裤，再配上一双黑色皮鞋，既正式又得体，让你在工作中自信满满。外面再搭一件灰色的西装外套，增加层次感。</p>
+              </div>
+
+              <div class="rounded-lg overflow-hidden mb-4">
+                <img src="https://picsum.photos/800/400?random=2" alt="日常通勤风穿搭" class="w-full h-auto object-cover">
+              </div>
+
+              <div class="flex items-center justify-between text-sm text-neutral-500 border-t border-b border-neutral-100 py-2">
+                <div class="flex items-center space-x-4">
+                  <button class="like-btn flex items-center space-x-1 text-neutral-500" data-post-id="2">
+                    <i class="fa-regular fa-heart"></i>
+                    <span class="like-count">89</span>
+                  </button>
+                  <button class="comment-btn flex items-center space-x-1" data-post-id="2">
+                    <i class="fa-regular fa-comment"></i>
+                    <span class="comment-count">12</span>
+                  </button>
+                </div>
+                <div class="flex items-center space-x-4">
+                  <button class="flex items-center space-x-1">
+                    <i class="fa-regular fa-share-from-square"></i>
+                    <span>分享</span>
+                  </button>
+                  <button class="flex items-center space-x-1">
+                    <i class="fa-regular fa-bookmark"></i>
+                    <span>收藏</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 评论区域 -->
+              <div class="comments-container mt-4 hidden" id="comments-2">
+                <!-- 评论内容与帖子1类似 -->
+              </div>
+            </div>
+          </article>
+
+          <!-- 帖子3 - 悠闲度假风格 -->
+          <article class="bg-white rounded-xl shadow-sm overflow-hidden transform transition-all duration-300 hover:shadow-md card-hover">
+            <div class="p-4">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center space-x-3">
+                  <img src="https://picsum.photos/200/200?random=6" alt="用户头像" class="h-10 w-10 rounded-full object-cover">
+                  <div>
+                    <h3 class="font-semibold text-neutral-700">王五</h3>
+                    <p class="text-xs text-neutral-500">4小时前</p>
+                  </div>
+                </div>
+                <button class="text-neutral-400 hover:text-neutral-600 transition-colors">
+                  <i class="fa-solid fa-ellipsis-h"></i>
+                </button>
+              </div>
+
+              <div class="mb-3">
+                <p class="text-neutral-700">悠闲度假当然要穿得轻松自在啦🌴。一件碎花连衣裙，搭配一双草编凉鞋，再戴上一顶宽边草帽，简直是度假必备穿搭。既能防晒又能拍出美美的照片😎。</p>
+              </div>
+
+              <div class="rounded-lg overflow-hidden mb-4">
+                <img src="https://picsum.photos/800/400?random=3" alt="悠闲度假风穿搭" class="w-full h-auto object-cover">
+              </div>
+
+              <div class="flex items-center justify-between text-sm text-neutral-500 border-t border-b border-neutral-100 py-2">
+                <div class="flex items-center space-x-4">
+                  <button class="like-btn flex items-center space-x-1 text-neutral-500" data-post-id="3">
+                    <i class="fa-regular fa-heart"></i>
+                    <span class="like-count">65</span>
+                  </button>
+                  <button class="comment-btn flex items-center space-x-1" data-post-id="3">
+                    <i class="fa-regular fa-comment"></i>
+                    <span class="comment-count">8</span>
+                  </button>
+                </div>
+                <div class="flex items-center space-x-4">
+                  <button class="flex items-center space-x-1">
+                    <i class="fa-regular fa-share-from-square"></i>
+                    <span>分享</span>
+                  </button>
+                  <button class="flex items-center space-x-1">
+                    <i class="fa-regular fa-bookmark"></i>
+                    <span>收藏</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 评论区域 -->
+              <div class="comments-container mt-4 hidden" id="comments-3">
+                <!-- 评论内容与帖子1类似 -->
+              </div>
+            </div>
+          </article>
+
+          <!-- 帖子4 - 乐享派对风格 -->
+          <article class="bg-white rounded-xl shadow-sm overflow-hidden transform transition-all duration-300 hover:shadow-md card-hover">
+            <div class="p-4">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center space-x-3">
+                  <img src="https://picsum.photos/200/200?random=7" alt="用户头像" class="h-10 w-10 rounded-full object-cover">
+                  <div>
+                    <h3 class="font-semibold text-neutral-700">赵六</h3>
+                    <p class="text-xs text-neutral-500">5小时前</p>
+                  </div>
+                </div>
+                <button class="text-neutral-400 hover:text-neutral-600 transition-colors">
+                  <i class="fa-solid fa-ellipsis-h"></i>
+                </button>
+              </div>
+
+              <div class="mb-3">
+                <p class="text-neutral-700">派对时间到🎉！一件闪亮的银色晚礼服，搭配一双高跟鞋和一条钻石项链，绝对是派对上的焦点。再加上一个精致的手拿包，完美！</p>
+              </div>
+
+              <div class="rounded-lg overflow-hidden mb-4">
+                <img src="https://picsum.photos/800/400?random=4" alt="乐享派对风穿搭" class="w-full h-auto object-cover">
+              </div>
+
+              <div class="flex items-center justify-between text-sm text-neutral-500 border-t border-b border-neutral-100 py-2">
+                <div class="flex items-center space-x-4">
+                  <button class="like-btn flex items-center space-x-1 text-neutral-500" data-post-id="4">
+                    <i class="fa-regular fa-heart"></i>
+                    <span class="like-count">92</span>
+                  </button>
+                  <button class="comment-btn flex items-center space-x-1" data-post-id="4">
+                    <i class="fa-regular fa-comment"></i>
+                    <span class="comment-count">15</span>
+                  </button>
+                </div>
+                <div class="flex items-center space-x-4">
+                  <button class="flex items-center space-x-1">
+                    <i class="fa-regular fa-share-from-square"></i>
+                    <span>分享</span>
+                  </button>
+                  <button class="flex items-center space-x-1">
+                    <i class="fa-regular fa-bookmark"></i>
+                    <span>收藏</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 评论区域 -->
+              <div class="comments-container mt-4 hidden" id="comments-4">
+                <!-- 评论内容与帖子1类似 -->
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // 导航栏滚动效果
+    window.addEventListener('scroll', function() {
+      const navbar = document.getElementById('navbar');
+      if (window.scrollY > 10) {
+        navbar.classList.add('py-2', 'shadow-md');
+        navbar.classList.remove('py-3', 'shadow-sm');
+      } else {
+        navbar.classList.add('py-3', 'shadow-sm');
+        navbar.classList.remove('py-2', 'shadow-md');
+      }
+    });
+
+    // 点赞功能
+    document.querySelectorAll('.like-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const postId = this.getAttribute('data-post-id');
+        const icon = this.querySelector('i');
+        const countEl = this.querySelector('.like-count');
+        const count = parseInt(countEl.textContent);
+
+        if (icon.classList.contains('fa-regular')) {
+          // 点赞
+          icon.classList.remove('fa-regular', 'text-neutral-500');
+          icon.classList.add('fa-solid', 'text-red-500', 'like-animation');
+          countEl.textContent = count + 1;
+        } else {
+          // 取消点赞
+          icon.classList.remove('fa-solid', 'text-red-500', 'like-animation');
+          icon.classList.add('fa-regular', 'text-neutral-500');
+          countEl.textContent = count - 1;
+        }
+      });
+    });
+
+    // 评论功能
+    document.querySelectorAll('.comment-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const postId = this.getAttribute('data-post-id');
+        const commentsContainer = document.getElementById(`comments-${postId}`);
+
+        if (commentsContainer.classList.contains('hidden')) {
+          commentsContainer.classList.remove('hidden');
+          commentsContainer.classList.add('animate-fade-in');
+        } else {
+          commentsContainer.classList.add('hidden');
+        }
+      });
+    });
+
+    // 评论点赞功能
+    document.querySelectorAll('.like-comment-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const commentId = this.getAttribute('data-comment-id');
+        const icon = this.querySelector('i');
+        const countText = this.textContent.trim();
+        let count = parseInt(countText.split(' ')[1]);
+
+        if (icon.classList.contains('fa-regular')) {
+          // 点赞
+          icon.classList.remove('fa-regular');
+          icon.classList.add('fa-solid', 'text-red-500');
+          this.textContent = `❤️ ${count + 1}`;
+        } else {
+          // 取消点赞
+          icon.classList.remove('fa-solid', 'text-red-500');
+          icon.classList.add('fa-regular');
+          this.textContent = `🤍 ${count - 1}`;
+        }
+      });
+    });
+
+    // 回复功能
+    document.querySelectorAll('.reply-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const commentDiv = this.closest('.flex-grow');
+        const replyInput = commentDiv.querySelector('.reply-input');
+
+        if (!replyInput) {
+          // 创建回复输入框
+          const replyDiv = document.createElement('div');
+          replyDiv.className = 'mt-2 flex space-x-2';
+          replyDiv.innerHTML = `
+            <img src="https://picsum.photos/200/200?random=1" alt="用户头像" class="h-6 w-6 rounded-full object-cover">
+            <div class="flex-grow">
+              <div class="relative">
+                <input type="text" placeholder="回复..." class="w-full border border-neutral-200 rounded-full py-1 px-3 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all">
+                <button class="absolute right-2 top-1/2 -translate-y-1/2 text-primary hover:text-primary/80 transition-colors text-xs">
+                  <i class="fa-regular fa-paper-plane"></i>
+                </button>
+              </div>
+            </div>
+          `;
+
+          this.closest('div').after(replyDiv);
+
+          // 回复提交事件
+          const submitBtn = replyDiv.querySelector('button');
+          submitBtn.addEventListener('click', function() {
+            const input = this.parentElement.querySelector('input');
+            const replyText = input.value.trim();
+
+            if (replyText) {
+              // 创建回复内容
+              const replyContent = document.createElement('div');
+              replyContent.className = 'mt-2 ml-6 space-y-2 flex space-x-2';
+              replyContent.innerHTML = `
+                <img src="https://picsum.photos/200/200?random=1" alt="用户头像" class="h-6 w-6 rounded-full object-cover">
+                <div class="flex-grow">
+                  <div class="bg-neutral-100 rounded-lg p-2">
+                    <div class="flex items-center justify-between mb-1">
+                      <h4 class="font-medium text-xs">你 <span class="text-neutral-500">@评论用户</span></h4>
+                      <span class="text-xs text-neutral-500">刚刚</span>
+                    </div>
+                    <p class="text-xs text-neutral-700">${replyText}</p>
+                  </div>
+                  <div class="flex items-center space-x-3 mt-1 text-xs text-neutral-500">
+                    <button class="like-comment-btn hover:text-primary transition-colors" data-comment-id="new">
+                      <i class="fa-regular fa-heart"></i> 0
+                    </button>
+                    <button class="reply-btn hover:text-primary transition-colors">
+                      回复
+                    </button>
+                  </div>
+                </div>
+              `;
+
+              // 添加到回复区域
+              replyDiv.after(replyContent);
+
+              // 移除输入框
+              replyDiv.remove();
+
+              // 为新回复绑定事件
+              const newLikeBtn = replyContent.querySelector('.like-comment-btn');
+              newLikeBtn.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                const countText = this.textContent.trim();
+                let count = parseInt(countText.split(' ')[1]);
+
+                if (icon.classList.contains('fa-regular')) {
+                  icon.classList.remove('fa-regular');
+                  icon.classList.add('fa-solid', 'text-red-500');
+                  this.textContent = `❤️ ${count + 1}`;
+                } else {
+                  icon.classList.remove('fa-solid', 'text-red-500');
+                  icon.classList.add('fa-regular');
+                  this.textContent = `🤍 ${count - 1}`;
+                }
+              });
+
+              const newReplyBtn = replyContent.querySelector('.reply-btn');
+              newReplyBtn.addEventListener('click', function() {
+                // 递归调用回复功能
+                const commentDiv = this.closest('.flex-grow');
+                const replyInput = commentDiv.querySelector('.reply-input');
+
+                if (!replyInput) {
+                  const replyDiv = document.createElement('div');
+                  replyDiv.className = 'mt-2 flex space-x-2';
+                  replyDiv.innerHTML = `
+                    <img src="https://picsum.photos/200/200?random=1" alt="用户头像" class="h-6 w-6 rounded-full object-cover">
+                    <div class="flex-grow">
+                      <div class="relative">
+                        <input type="text" placeholder="回复..." class="w-full border border-neutral-200 rounded-full py-1 px-3 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all">
+                        <button class="absolute right-2 top-1/2 -translate-y-1/2 text-primary hover:text-primary/80 transition-colors text-xs">
+                          <i class="fa-regular fa-paper-plane"></i>
+                        </button>
+                      </div>
+                    </div>
+                  `;
+
+                  this.closest('div').after(replyDiv);
+
+                  const submitBtn = replyDiv.querySelector('button');
+                  submitBtn.addEventListener('click', function() {
+                    const input = this.parentElement.querySelector('input');
+                    const replyText = input.value.trim();
+
+                    if (replyText) {
+                      const replyContent = document.createElement('div');
+                      replyContent.className = 'mt-2 ml-6 space-y-2 flex space-x-2';
+                      replyContent.innerHTML = `
+                        <img src="https://picsum.photos/200/200?random=1" alt="用户头像" class="h-6 w-6 rounded-full object-cover">
+                        <div class="flex-grow">
+                          <div class="bg-neutral-100 rounded-lg p-2">
+                            <div class="flex items-center justify-between mb-1">
+                              <h4 class="font-medium text-xs">你 <span class="text-neutral-500">@回复用户</span></h4>
+                              <span class="text-xs text-neutral-500">刚刚</span>
+                            </div>
+                            <p class="text-xs text-neutral-700">${replyText}</p>
+                          </div>
+                          <div class="flex items-center space-x-3 mt-1 text-xs text-neutral-500">
+                            <button class="like-comment-btn hover:text-primary transition-colors" data-comment-id="new">
+                              <i class="fa-regular fa-heart"></i> 0
+                            </button>
+                            <button class="reply-btn hover:text-primary transition-colors">
+                              回复
+                            </button>
+                          </div>
+                        </div>
+                      `;
+
+                      replyDiv.after(replyContent);
+                      replyDiv.remove();
+
+                      // 为新回复绑定事件
+                      const newLikeBtn = replyContent.querySelector('.like-comment-btn');
+                      newLikeBtn.addEventListener('click', function() {
+                        const icon = this.querySelector('i');
+                        const countText = this.textContent.trim();
+                        let count = parseInt(countText.split(' ')[1]);
+
+                        if (icon.classList.contains('fa-regular')) {
+                          icon.classList.remove('fa-regular');
+                          icon.classList.add('fa-solid', 'text-red-500');
+                          this.textContent = `❤️ ${count + 1}`;
+                        } else {
+                          icon.classList.remove('fa-solid', 'text-red-500');
+                          icon.classList.add('fa-regular');
+                          this.textContent = `🤍 ${count - 1}`;
+                        }
+                      });
+
+                      const newReplyBtn = replyContent.querySelector('.reply-btn');
+                      newReplyBtn.addEventListener('click', function() {
+                        // 可以继续嵌套回复
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+    });
+
+    // 发布评论功能
+    document.querySelectorAll('.comments-container input').forEach(input => {
+      input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          const commentText = this.value.trim();
+          if (commentText) {
+            const commentsList = this.closest('.comments-container').querySelector('.space-y-3');
+            const newComment = document.createElement('div');
+            newComment.className = 'flex space-x-3';
+            newComment.innerHTML = `
+              <img src="https://picsum.photos/200/200?random=1" alt="用户头像" class="h-8 w-8 rounded-full object-cover">
+              <div class="flex-grow">
+                <div class="bg-neutral-100 rounded-lg p-3">
+                  <div class="flex items-center justify-between mb-1">
+                    <h4 class="font-medium text-sm">你</h4>
+                    <span class="text-xs text-neutral-500">刚刚</span>
+                  </div>
+                  <p class="text-sm text-neutral-700">${commentText}</p>
+                </div>
+                <div class="flex items-center space-x-3 mt-1 text-xs text-neutral-500">
+                  <button class="like-comment-btn hover:text-primary transition-colors" data-comment-id="new">
+                    <i class="fa-regular fa-heart"></i> 0
+                  </button>
+                  <button class="reply-btn hover:text-primary transition-colors">
+                    回复
+                  </button>
+                </div>
+              </div>
+            `;
+
+            // 添加新评论到列表顶部
+            commentsList.insertBefore(newComment, commentsList.firstChild);
+
+            // 清空输入框
+            this.value = '';
+
+            // 为新评论绑定事件
+            const likeBtn = newComment.querySelector('.like-comment-btn');
+            likeBtn.addEventListener('click', function() {
+              const icon = this.querySelector('i');
+              const countText = this.textContent.trim();
+              let count = parseInt(countText.split(' ')[1]);
+
+              if (icon.classList.contains('fa-regular')) {
+                icon.classList.remove('fa-regular');
+                icon.classList.add('fa-solid', 'text-red-500');
+                this.textContent = `❤️ ${count + 1}`;
+              } else {
+                icon.classList.remove('fa-solid', 'text-red-500');
+                icon.classList.add('fa-regular');
+                this.textContent = `🤍 ${count - 1}`;
+              }
+            });
+
+            const replyBtn = newComment.querySelector('.reply-btn');
+            replyBtn.addEventListener('click', function() {
+              const commentDiv = this.closest('.flex-grow');
+              const replyInput = commentDiv.querySelector('.reply-input');
+
+              if (!replyInput) {
+                const replyDiv = document.createElement('div');
+                replyDiv.className = 'mt-2 flex space-x-2';
+                replyDiv.innerHTML = `
+                  <img src="https://picsum.photos/200/200?random=1" alt="用户头像" class="h-6 w-6 rounded-full object-cover">
+                  <div class="flex-grow">
+                    <div class="relative">
+                      <input type="text" placeholder="回复..." class="w-full border border-neutral-200 rounded-full py-1 px-3 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all">
+                      <button class="absolute right-2 top-1/2 -translate-y-1/2 text-primary hover:text-primary/80 transition-colors text-xs">
+                        <i class="fa-regular fa-paper-plane"></i>
+                      </button>
+                    </div>
+                  </div>
+                `;
+
+                this.closest('div').after(replyDiv);
+
+                const submitBtn = replyDiv.querySelector('button');
+                submitBtn.addEventListener('click', function() {
+                  const input = this.parentElement.querySelector('input');
+                  const replyText = input.value.trim();
+
+                  if (replyText) {
+                    const replyContent = document.createElement('div');
+                    replyContent.className = 'mt-2 ml-6 space-y-2 flex space-x-2';
+                    replyContent.innerHTML = `
+                      <img src="https://picsum.photos/200/200?random=1" alt="用户头像" class="h-6 w-6 rounded-full object-cover">
+                      <div class="flex-grow">
+                        <div class="bg-neutral-100 rounded-lg p-2">
+                          <div class="flex items-center justify-between mb-1">
+                            <h4 class="font-medium text-xs">你 <span class="text-neutral-500">@你</span></h4>
+                            <span class="text-xs text-neutral-500">刚刚</span>
+                          </div>
+                          <p class="text-xs text-neutral-700">${replyText}</p>
+                        </div>
+                        <div class="flex items-center space-x-3 mt-1 text-xs text-neutral-500">
+                          <button class="like-comment-btn hover:text-primary transition-colors" data-comment-id="new">
+                            <i class="fa-regular fa-heart"></i> 0
+                          </button>
+                          <button class="reply-btn hover:text-primary transition-colors">
+                            回复
+                          </button>
+                        </div>
+                      </div>
+                    `;
+
+                    replyDiv.after(replyContent);
+                    replyDiv.remove();
+
+                    // 为新回复绑定事件
+                    const newLikeBtn = replyContent.querySelector('.like-comment-btn');
+                    newLikeBtn.addEventListener('click', function() {
+                      const icon = this.querySelector('i');
+                      const countText = this.textContent.trim();
+                      let count = parseInt(countText.split(' ')[1]);
+
+                      if (icon.classList.contains('fa-regular')) {
+                        icon.classList.remove('fa-regular');
+                        icon.classList.add('fa-solid', 'text-red-500');
+                        this.textContent = `❤️ ${count + 1}`;
+                      } else {
+                        icon.classList.remove('fa-solid', 'text-red-500');
+                        icon.classList.add('fa-regular');
+                        this.textContent = `🤍 ${count - 1}`;
+                      }
+                    });
+
+                    const newReplyBtn = replyContent.querySelector('.reply-btn');
+                    newReplyBtn.addEventListener('click', function() {
+                      // 可以继续嵌套回复
+                    });
+                  }
+                });
+              }
+            });
+          }
+        }
+      });
+    });
+
+    // 评论发布按钮点击事件
+    document.querySelectorAll('.comments-container button').forEach(btn => {
+      if (btn.textContent.includes('paper-plane')) {
+        btn.addEventListener('click', function() {
+          const input = this.parentElement.querySelector('input');
+          input.dispatchEvent(new KeyboardEvent('keypress', {key: 'Enter'}));
+        });
+      }
+    });
+  </script>
+</body>
+</html>
