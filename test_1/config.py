@@ -10,7 +10,7 @@ USERNAME = 'root'
 #连接mysql的密码（自己的）
 PASSWORD = '123456'
 #mysql上的数据库名称(需要先创建完成)
-DATABASE = 'database_blog2025'
+DATABASE = 'webshixun'
 #app.config中配置flask连接数据库配置
 #'mysql+[driver]://[USERNAME]:[PASSWORD]@[HOSTNAME]:[PORT]/[DATABASE]?charset=utf-8'
 SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{USERNAME}:{PASSWORD}@{HOSTNAME}:{PORT}/{DATABASE}?charset=utf8mb4'
