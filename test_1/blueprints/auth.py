@@ -23,7 +23,7 @@ def login():
 
         user = UserModel.query.filter((UserModel.email == email) | (UserModel.username == email)).first()
         print(f"查询到的用户: {user}")  # 检查用户是否存在
-        return redirect(url_for("auth.personal_center"))
+        return redirect(url_for("auth.shouye"))
         if user:
             print(f"数据库中的密码哈希: {user.password}")
             print(f"密码校验结果: {check_password_hash(user.password, password)}")
@@ -85,6 +85,11 @@ def register():
 
         return render_template("login.html")
 
+@bp.route("/shouye")
+def shouye():
+    return render_template("shouye.html")
+
 @bp.route("/personal_center")
+@login_required
 def personal_center():
     return render_template("Personal Center.html")
