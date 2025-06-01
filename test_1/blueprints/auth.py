@@ -4,11 +4,12 @@ from flask import url_for, Blueprint, render_template, request, jsonify, redirec
 from flask_mail import Message
 from exts import db
 from .forms import RegisterForm
-from models import UserModel
+from models import UserModel, PostModel
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
+
 
 
 @bp.route("/login", methods=["GET", "POST"])
@@ -19,15 +20,20 @@ def login():
         # 获取表单数据
         email = request.form.get("login-username")
         password = request.form.get("login-password")
-        print(f"尝试登录: 邮箱/用户名={email}, 密码={password}")  # 调试输出
 
         user = UserModel.query.filter((UserModel.email == email) | (UserModel.username == email)).first()
-        print(f"查询到的用户: {user}")  # 检查用户是否存在
-        return redirect(url_for("auth.shouye"))
-        if user:
-            print(f"数据库中的密码哈希: {user.password}")
-            print(f"密码校验结果: {check_password_hash(user.password, password)}")
+
+        if not user:
+            flash("用户名或邮箱不存在", "error")
             return redirect(url_for("auth.login"))
+
+        if not check_password_hash(user.password, password):
+            flash("密码错误", "error")
+            return redirect(url_for("auth.login"))
+
+        login_user(user)
+        flash("登录成功", "success")
+        return redirect(url_for("qa.index"))
 
 
 @bp.route("/logout")
@@ -89,7 +95,13 @@ def register():
 def shouye():
     return render_template("shouye.html")
 
+# auth.py
+# auth.py
 @bp.route("/personal_center")
 @login_required
 def personal_center():
-    return render_template("Personal Center.html")
+    # 获取用户的帖子
+    posts = PostModel.query.filter_by(user_id=current_user.id).order_by(PostModel.create_time.desc()).all()
+    # 获取用户的帖子数量
+    post_count = len(posts)
+    return render_template("Personal Center.html", posts=posts, post_count=post_count)

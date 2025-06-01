@@ -108,6 +108,8 @@
     <!-- 注册页面 -->
     <div id="register-page" class="min-h-screen flex items-center justify-center p-4 hidden">
         <form action="{{ url_for('auth.register') }}" method="POST">
+
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <div class="w-full max-w-md">
             <div class="text-center mb-8">
                 <div class="flex items-center justify-center">

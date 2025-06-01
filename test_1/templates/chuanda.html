@@ -75,10 +75,8 @@
       </div>
 
       <div class="hidden md:flex items-center space-x-6">
-        <a href="#" class="text-primary font-medium">首页</a>
-        <a href="#" class="text-neutral-500 hover:text-primary transition-colors">发现</a>
-        <a href="#" class="text-neutral-500 hover:text-primary transition-colors">消息</a>
-        <a href="#" class="text-neutral-500 hover:text-primary transition-colors">个人中心</a>
+        <a href="{{ url_for('qa.index') }}" class="text-primary font-medium">首页</a>
+        <a href="{{ url_for('auth.personal_center') }}" class="text-neutral-500 hover:text-primary transition-colors">个人中心</a>
       </div>
 
       <div class="flex items-center space-x-4">
@@ -119,18 +117,44 @@
 
         <!-- 帖子列表 -->
         <!-- 在chuanda.html的帖子列表部分修改为动态内容 -->
-        <div class="space-y-6" id="posts-container">
-        {% for post in posts %}
-        <article class="bg-white rounded-xl shadow-sm overflow-hidden transform transition-all duration-300 hover:shadow-md card-hover">
-          <!-- 保持原有的帖子内容不变 -->
-        </article>
-        {% else %}
-        <div class="text-center py-10">
-          <p class="text-neutral-500">暂无相关帖子</p>
-          <a href="{{ url_for('qa.create_post') }}" class="text-primary mt-2 inline-block">发布第一个帖子</a>
-        </div>
-        {% endfor %}
-      </div>
+        <!-- chuanda.html -->
+          <!-- 帖子列表部分修改为： -->
+          <div class="space-y-6" id="posts-container">
+              {% for post in posts %}
+              <article class="bg-white rounded-xl shadow-sm overflow-hidden transform transition-all duration-300 hover:shadow-md card-hover">
+                  <div class="p-6">
+                      <div class="flex items-start">
+                          {% if post.image_url %}
+                          <div class="flex-shrink-0 mr-4">
+                              <img src="{{ post.image_url }}" alt="帖子图片" class="w-32 h-32 object-cover rounded-lg">
+                          </div>
+                          {% endif %}
+                          <div class="flex-1">
+                              <div class="flex items-center justify-between">
+                                  <h3 class="text-lg font-semibold text-primary">{{ post.title }}</h3>
+                                  <span class="text-sm text-neutral-500">{{ post.create_time.strftime('%Y-%m-%d') }}</span>
+                              </div>
+                              <p class="text-neutral-600 mt-2">{{ post.content }}</p>
+                              <div class="mt-4 flex items-center justify-between">
+                                  <span class="text-sm text-neutral-500">{{ post.category }}</span>
+                                  <div class="flex items-center space-x-4">
+                                      <button class="like-btn flex items-center text-neutral-500 hover:text-red-500" data-post-id="{{ post.id }}">
+                                          <i class="far fa-heart mr-1"></i>
+                                          <span class="like-count">{{ post.likes|length }}</span>
+                                      </button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </article>
+              {% else %}
+              <div class="text-center py-10">
+                  <p class="text-neutral-500">暂无相关帖子</p>
+                  <a href="{{ url_for('qa.create_post') }}" class="text-primary mt-2 inline-block">发布第一个帖子</a>
+              </div>
+              {% endfor %}
+          </div>
     </div>
   </main>
 

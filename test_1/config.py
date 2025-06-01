@@ -15,3 +15,7 @@ DATABASE = 'webshixun'
 #'mysql+[driver]://[USERNAME]:[PASSWORD]@[HOSTNAME]:[PORT]/[DATABASE]?charset=utf-8'
 SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{USERNAME}:{PASSWORD}@{HOSTNAME}:{PORT}/{DATABASE}?charset=utf8mb4'
 
+# 上传文件配置
+MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10MB
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}

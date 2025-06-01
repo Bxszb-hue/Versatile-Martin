@@ -31,5 +31,8 @@ from blueprints.auth import bp as auth_bp
 app.register_blueprint(qa_bp)
 app.register_blueprint(auth_bp)
 
+app.config['MAX_CONTENT_LENGTH'] = config.MAX_CONTENT_LENGTH
+app.config['UPLOAD_FOLDER'] = config.UPLOAD_FOLDER
+
 if __name__ == '__main__':
     app.run(debug=True)

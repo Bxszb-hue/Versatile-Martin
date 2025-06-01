@@ -70,13 +70,13 @@
       <!-- 右侧按钮 -->
       <div class="flex items-center space-x-4">
         <!-- 发帖按钮 -->
-        <a href="Published_content.html" class="hidden md:flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-medium hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+        <a href="{{ url_for('qa.create_post') }}" class="hidden md:flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-medium hover:shadow-lg transition-all transform hover:-translate-y-0.5">
           <i class="fa fa-pencil-alt mr-2"></i>
           <span>发布穿搭</span>
         </a>
 
         <!-- 个人中心按钮 -->
-        <a href="Personal Center.html" class="hidden md:flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-medium hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+        <a href="{{ url_for('auth.personal_center') }}" class="hidden md:flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-medium hover:shadow-lg transition-all transform hover:-translate-y-0.5">
           <i class="fa fa-user mr-2"></i>
           <span>个人中心</span>
         </a>
@@ -87,7 +87,7 @@
         </button>
 
         <!-- 个人头像按钮 -->
-        <a href="Personal Center.html" class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20 hover:border-primary transition-all">
+        <a href="{{ url_for('auth.personal_center') }}" class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20 hover:border-primary transition-all">
           <img src="https://picsum.photos/200/200?random=1" alt="个人头像" class="w-full h-full object-cover">
         </a>
       </div>
