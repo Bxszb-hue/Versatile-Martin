@@ -70,20 +70,26 @@
       <!-- 右侧按钮 -->
       <div class="flex items-center space-x-4">
         <!-- 发帖按钮 -->
-        <button class="hidden md:flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-medium hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+        <a href="{{ url_for('qa.create_post') }}" class="hidden md:flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-medium hover:shadow-lg transition-all transform hover:-translate-y-0.5">
           <i class="fa fa-pencil-alt mr-2"></i>
           <span>发布穿搭</span>
-        </button>
+        </a>
+
+        <!-- 个人中心按钮 -->
+        <a href="{{ url_for('auth.personal_center') }}" class="hidden md:flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary to-secondary text-white font-medium hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+          <i class="fa fa-user mr-2"></i>
+          <span>个人中心</span>
+        </a>
 
         <!-- 移动端菜单按钮 -->
         <button class="md:hidden text-gray-600 hover:text-primary transition-colors">
           <i class="fa fa-bars text-xl"></i>
         </button>
 
-        <!-- 个人中心按钮 -->
-        <button class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20 hover:border-primary transition-all">
+        <!-- 个人头像按钮 -->
+        <a href="{{ url_for('auth.personal_center') }}" class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20 hover:border-primary transition-all">
           <img src="https://picsum.photos/200/200?random=1" alt="个人头像" class="w-full h-full object-cover">
-        </button>
+        </a>
       </div>
     </div>
   </header>
@@ -105,7 +111,7 @@
             </div>
             <h3 class="text-xl font-bold text-white mb-1">休闲运动</h3>
             <p class="text-white/80 mb-4">舒适与时尚并存的日常运动穿搭</p>
-            <a href="#" class="inline-flex items-center text-white font-medium group">
+            <a href="{{ url_for('qa.chuanda', category='休闲运动') }}" class="inline-flex items-center text-white font-medium group">
               探索更多
               <i class="fa fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
             </a>
@@ -122,7 +128,7 @@
             </div>
             <h3 class="text-xl font-bold text-white mb-1">日常通勤</h3>
             <p class="text-white/80 mb-4">专业不失个性的职场穿搭指南</p>
-            <a href="#" class="inline-flex items-center text-white font-medium group">
+            <a href="{{ url_for('qa.chuanda', category='日常通勤') }}" class="inline-flex items-center text-white font-medium group">
               探索更多
               <i class="fa fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
             </a>
@@ -139,7 +145,7 @@
             </div>
             <h3 class="text-xl font-bold text-white mb-1">悠闲度假</h3>
             <p class="text-white/80 mb-4">轻松愉悦的假期穿搭灵感</p>
-            <a href="#" class="inline-flex items-center text-white font-medium group">
+            <a href="{{ url_for('qa.chuanda', category='休闲度假') }}" class="inline-flex items-center text-white font-medium group">
               探索更多
               <i class="fa fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
             </a>
@@ -156,7 +162,7 @@
             </div>
             <h3 class="text-xl font-bold text-white mb-1">乐享派对</h3>
             <p class="text-white/80 mb-4">闪耀全场的派对穿搭技巧</p>
-            <a href="#" class="inline-flex items-center text-white font-medium group">
+            <a href="{{ url_for('qa.chuanda', category='乐享派对') }}" class="inline-flex items-center text-white font-medium group">
               探索更多
               <i class="fa fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
             </a>
